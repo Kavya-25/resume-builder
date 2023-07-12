@@ -1,0 +1,27 @@
+@import "../../styles";
+.inputcontrol {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  margin: 2rem 1rem;
+  label {
+    font-size: 1.2rem;
+  }
+  input {
+    border: 1px solid rgba(133, 131, 131, 0.406);
+    outline: none;
+    padding: 10px 12px;
+    border-radius: 5px;
+    font-size: 1.2rem;
+    background-color: transparent;
+    // color: $color-dark;
+    color: rgba(166, 163, 163, 0.984);
+    width: 100%;
+    margin: 5px 0;
+    &:focus {
+      border: 1px solid $blue;
+      color: $blue;
+    }
+  }
+}

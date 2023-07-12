@@ -1,0 +1,21 @@
+@import "./styles";
+@import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
+
+:root {
+  color: $color-dark;
+}
+
+body {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  font-family: "Poppins", sans-serif;
+  background-color: $background-dark;
+}
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(#ffcc70, #c850c0, #4158d0);
+}
