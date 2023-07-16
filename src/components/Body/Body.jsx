@@ -1,14 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import "./Body.scss";
 import { Editor } from "../Editor/Editor";
+import Resume from "../Resume/Resume";
+import ReactToPrint from "react-to-print";
 import { useEffect } from "react";
-import { Resume } from "../Resume/Resume";
 
 export const Body = () => {
-  const colors = ["#239ce2", "#48bb78", "#0bc5ea", "#a0aec0", "#ed8936"];
+  const colors = ["#201775", "#009193", "#424242", "#771624", "#5278D2"];
 
   const sections = {
     basicInfo: "Basic Info",
+    skills: "Skills",
     workExp: "Work Experience",
     project: "Projects",
     education: "Education",
@@ -17,10 +19,19 @@ export const Body = () => {
     others: "Others",
   };
 
+  const resumeRef = useRef();
+
+  const [activeColor, setActiveColor] = useState(colors[0]);
+
   const [resumeInformation, setResumeInformation] = useState({
     [sections.basicInfo]: {
       id: sections.basicInfo,
       sectionTitle: sections.basicInfo,
+      detail: {},
+    },
+    [sections.skills]: {
+      id: sections.skills,
+      sectionTitle: sections.skills,
       detail: {},
     },
     [sections.workExp]: {
@@ -48,9 +59,9 @@ export const Body = () => {
       sectionTitle: sections.summary,
       detail: "",
     },
-    [sections.other]: {
-      id: sections.other,
-      sectionTitle: sections.other,
+    [sections.others]: {
+      id: sections.others,
+      sectionTitle: sections.others,
       detail: "",
     },
   });
@@ -58,7 +69,6 @@ export const Body = () => {
   useEffect(() => {
     console.log(resumeInformation);
   }, [resumeInformation]);
-
   return (
     <div className="body">
       <h1 className="heading">Resume Builder</h1>
@@ -69,12 +79,18 @@ export const Body = () => {
               <span
                 key={idx}
                 style={{ backgroundColor: item }}
-                className="color"
+                className={`color ${activeColor === item ? "active" : ""}`}
+                onClick={() => setActiveColor(item)}
               ></span>
             );
           })}
         </div>
-        <button>Download</button>
+        <ReactToPrint
+          trigger={() => {
+            return <button>Download</button>;
+          }}
+          content={() => resumeRef.current}
+        />
       </div>
       <div className="main">
         <Editor
@@ -82,7 +98,12 @@ export const Body = () => {
           information={resumeInformation}
           setInformation={setResumeInformation}
         />
-        <Resume information={resumeInformation} sections={sections} />
+        <Resume
+          ref={resumeRef}
+          information={resumeInformation}
+          sections={sections}
+          activeColor={activeColor}
+        />
       </div>
     </div>
   );

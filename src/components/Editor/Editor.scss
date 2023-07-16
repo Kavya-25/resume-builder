@@ -6,6 +6,9 @@
   .row {
     display: flex;
     gap: 20px;
+    @media (max-width: 900px) {
+      flex-direction: column;
+    }
   }
   .column {
     display: flex;
@@ -24,6 +27,8 @@
   margin: 1rem;
   .editor-header {
     display: flex;
+    // flex-direction: column;
+    flex-wrap: wrap;
     gap: 30px;
     overflow-x: auto;
     border-bottom: 1px solid rgba(128, 128, 128, 0.292);
@@ -89,5 +94,12 @@
       width: 150px;
       cursor: pointer;
     }
+    @media (max-width: 900px) {
+      align-items: flex-start;
+    }
+  }
+  @media (max-width: 900px) {
+    min-width: 200px;
+    width: 100%;
   }
 }

@@ -9,12 +9,10 @@ export const Editor = (props) => {
   const information = props.information;
 
   const [activeKey, setActiveKey] = useState(Object.keys(sections)[0]);
-
-  const [activeInformation, setActiveInformation] = useState();
-  information[sections[Object.keys(sections)[0]]];
-
+  const [activeInformation, setActiveInformation] = useState(
+    information[sections[Object.keys(sections)[0]]]
+  );
   const [activeDetailIndex, setActiveDetailIndex] = useState(0);
-
   const [sectionTitle, setSectionTitle] = useState(
     sections[Object.keys(sections)[0]]
   );
@@ -39,7 +37,6 @@ export const Editor = (props) => {
   };
   const handleSubmission = (e) => {
     e.preventDefault();
-    console.log("hi");
     switch (sections[activeKey]) {
       case sections.basicInfo: {
         const tempDetail = {
@@ -84,6 +81,26 @@ export const Editor = (props) => {
         }));
         break;
       }
+      case sections.skills: {
+        const tempDetail = {
+          technologies: values.technologies,
+          libraries: values.libraries,
+          tools: values.tools,
+          softskills: values.softskills,
+          otherskills: values.otherskills,
+          languages: values.languages,
+        };
+
+        props.setInformation((prev) => ({
+          ...prev,
+          [sections.skills]: {
+            ...prev[sections.skills],
+            detail: tempDetail,
+            sectionTitle,
+          },
+        }));
+        break;
+      }
       case sections.project: {
         const tempDetail = {
           link: values.link,
@@ -111,6 +128,7 @@ export const Editor = (props) => {
           college: values.college,
           startDate: values.startDate,
           endDate: values.endDate,
+          cgpi: values.cgpi,
         };
         const tempDetails = [...information[sections.education]?.details];
         tempDetails[activeDetailIndex] = tempDetail;
@@ -259,22 +277,63 @@ export const Editor = (props) => {
           }
         />
       </div>
-      <div className="column">
-        <label htmlFor="">Enter work description</label>
+    </div>
+  );
+
+  const skillBody = (
+    <div className="detail">
+      <div className="row">
         <InputControl
-          placeholder="Line 1"
-          value={values.points ? values.points[0] : ""}
-          onChange={(e) => handlePointUpdate(e.target.value, 0)}
+          label="Technologies"
+          placeholder="e.g HTML ,CSS ,JS, C++"
+          value={values.technologies}
+          onChange={(e) =>
+            setValues((prev) => ({ ...prev, technologies: e.target.value }))
+          }
         />
         <InputControl
-          placeholder="Line 2"
-          value={values.points ? values.points[1] : ""}
-          onChange={(e) => handlePointUpdate(e.target.value, 1)}
+          label="Libraries/Frameworks (if any)"
+          placeholder="e.g React ,Bootstrap etc."
+          value={values.libraries}
+          onChange={(e) =>
+            setValues((prev) => ({ ...prev, libraries: e.target.value }))
+          }
+        />
+      </div>
+      <div className="row">
+        <InputControl
+          label="Tools"
+          placeholder="e.g Github ,MS Excel"
+          value={values.tools}
+          onChange={(e) =>
+            setValues((prev) => ({ ...prev, tools: e.target.value }))
+          }
         />
         <InputControl
-          placeholder="Line 3"
-          value={values.points ? values.points[2] : ""}
-          onChange={(e) => handlePointUpdate(e.target.value, 2)}
+          label="Soft Skills"
+          placeholder="e.g communcation ,leadership , management"
+          value={values.softskills}
+          onChange={(e) =>
+            setValues((prev) => ({ ...prev, softskills: e.target.value }))
+          }
+        />
+      </div>
+      <div className="row">
+        <InputControl
+          label="Others (if any) "
+          placeholder="e.g touch typing "
+          value={values.otherskills}
+          onChange={(e) =>
+            setValues((prev) => ({ ...prev, otherskills: e.target.value }))
+          }
+        />
+        <InputControl
+          label="Languages "
+          placeholder="e.g Hindi, English "
+          value={values.languages}
+          onChange={(e) =>
+            setValues((prev) => ({ ...prev, languages: e.target.value }))
+          }
         />
       </div>
     </div>
@@ -292,8 +351,8 @@ export const Editor = (props) => {
           }
         />
         <InputControl
-          label="Overview"
-          placeholder="Enter basic overview of project"
+          label="Technologies Used"
+          placeholder="eg. HTML,CSS,JS"
           value={values.overview}
           onChange={(e) =>
             setValues((prev) => ({ ...prev, overview: e.target.value }))
@@ -321,19 +380,9 @@ export const Editor = (props) => {
       <div className="column">
         <label htmlFor="">Enter project description</label>
         <InputControl
-          placeholder="Line 1"
+          placeholder="Your description here"
           value={values.points ? values.points[0] : ""}
           onChange={(e) => handlePointUpdate(e.target.value, 0)}
-        />
-        <InputControl
-          placeholder="Line 2"
-          value={values.points ? values.points[1] : ""}
-          onChange={(e) => handlePointUpdate(e.target.value, 1)}
-        />
-        <InputControl
-          placeholder="Line 3"
-          value={values.points ? values.points[2] : ""}
-          onChange={(e) => handlePointUpdate(e.target.value, 2)}
         />
       </div>
     </div>
@@ -356,6 +405,14 @@ export const Editor = (props) => {
           value={values.college}
           onChange={(e) =>
             setValues((prev) => ({ ...prev, college: e.target.value }))
+          }
+        />
+        <InputControl
+          label="CGPI/Percentage"
+          placeholder="Enter Cgpi/Percentage"
+          value={values.cgpi}
+          onChange={(e) =>
+            setValues((prev) => ({ ...prev, cgpi: e.target.value }))
           }
         />
       </div>
@@ -493,6 +550,8 @@ export const Editor = (props) => {
     switch (sections[activeKey]) {
       case sections.basicInfo:
         return basicInfoBody;
+      case sections.skills:
+        return skillBody;
       case sections.workExp:
         return workExBody;
       case sections.project:
@@ -519,6 +578,22 @@ export const Editor = (props) => {
       name: activeInfo?.detail?.name || "",
       overview: activeInfo?.details
         ? activeInfo.details[0]?.overview || ""
+        : "",
+      technologies: activeInfo?.details
+        ? activeInfo.details[0]?.technologies || ""
+        : "",
+      libraries: activeInfo?.details
+        ? activeInfo.details[0]?.libraries || ""
+        : "",
+      tools: activeInfo?.details ? activeInfo.details[0]?.tools || "" : "",
+      softskills: activeInfo?.details
+        ? activeInfo.details[0]?.softskills || ""
+        : "",
+      otherskills: activeInfo?.details
+        ? activeInfo.details[0]?.otherskills || ""
+        : "",
+      languages: activeInfo?.details
+        ? activeInfo.details[0]?.languages || ""
         : "",
       link: activeInfo?.details ? activeInfo.details[0]?.link || "" : "",
       certificationLink: activeInfo?.details

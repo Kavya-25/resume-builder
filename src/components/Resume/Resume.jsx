@@ -1,153 +1,412 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import "./Resume.scss";
-import { MdAlternateEmail } from "react-icons/md";
-import {
-  AiFillLinkedin,
-  AiFillGithub,
-  AiOutlinePhone,
-  AiOutlineLink,
-  AiOutlineCalendar,
-} from "react-icons/ai";
-import { CiLocationOn } from "react-icons/ci";
-import { useEffect } from "react";
 
-export const Resume = (props) => {
+import { GoDotFill } from "react-icons/go";
+import { CiLocationOn } from "react-icons/ci";
+import { forwardRef } from "react";
+
+const Resume = forwardRef((props, ref) => {
   const information = props.information;
   const sections = props.sections;
 
+  const containerRef = useRef();
+
   const [column, setColumn] = useState([], []);
 
-  const workExpSection = (
-    <div key={"workexp"} className="section workExp">
-      <div className="sectionTitle">Work Experience</div>
-      <div className="content">
-        <div className="item">
-          <div className="title">Frontend developer</div>
-          <div className="subtitle">Company Name</div>
-          <div className="date">
-            <AiOutlineCalendar className="icon" />
-            1/2/2020 to 2/8/2023
+  const info = {
+    workExp: information[sections.workExp],
+    skills: information[sections.skills],
+    project: information[sections.project],
+    achievements: information[sections.achievements],
+    education: information[sections.education],
+    basicInfo: information[sections.basicInfo],
+    summary: information[sections.summary],
+    others: information[sections.others],
+  };
+
+  const getFormattedDate = (value) => {
+    if (!value) return "";
+    const date = new Date(value);
+
+    return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+  };
+
+  const sectionDivs = {
+    [sections.workExp]: (
+      <div
+        key={"workexp"}
+        className={`section  ${info.workExp?.sectionTitle ? "" : "hidden"}`}
+      >
+        <div className="sectionTitle">{info.workExp.sectionTitle}</div>
+        <div className="content">
+          {info.workExp?.details?.map((item) => (
+            <div className="item" key={item.title}>
+              <div className="item-container">
+                <div className="main">
+                  {item.title ? (
+                    <div className="title">•&nbsp;{item.title}</div>
+                  ) : (
+                    ""
+                  )}
+                  {item.companyName ? (
+                    <div className="subtitle">{item.companyName}</div>
+                  ) : (
+                    ""
+                  )}
+                  {item.certificationLink ? (
+                    <a
+                      href={item.certificationLink}
+                      target="_blank"
+                      className="link"
+                      style={{ color: `${props.activeColor}` }}
+                    >
+                      Certificate Link
+                    </a>
+                  ) : (
+                    ""
+                  )}
+                </div>
+                <div className="main-2">
+                  {item.startDate && item.endDate ? (
+                    <span className="date">
+                      {getFormattedDate(item.startDate)}-
+                      {getFormattedDate(item.endDate)}
+                    </span>
+                  ) : (
+                    ""
+                  )}
+                  {item.location ? (
+                    <div className="location">{item.location}</div>
+                  ) : (
+                    ""
+                  )}
+                </div>
+              </div>
+              {item.points?.length > 0 ? (
+                <ul className="points">
+                  {item.points?.map((elem, index) => (
+                    <li className="point" key={elem + index}>
+                      {elem}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <span />
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    ),
+    [sections.skills]: (
+      <div
+        key={"skills"}
+        className={`section  ${info.skills?.sectionTitle ? "" : "hidden"}`}
+      >
+        <div className="sectionTitle">{info.skills.sectionTitle}</div>
+        <div className="content">
+          <div className="item">
+            <div className="skill-container">
+              {info.skills?.detail?.technologies ? (
+                <div className="skill-text">
+                  <span>
+                    <GoDotFill className="dot" />
+                    Technologies :
+                  </span>
+                  {info.skills?.detail?.technologies}
+                </div>
+              ) : (
+                ""
+              )}
+              {info.skills?.detail?.libraries ? (
+                <div className="skill-text">
+                  <span>
+                    <GoDotFill className="dot" />
+                    Libraries/Frameworks :
+                  </span>
+                  {info.skills?.detail?.libraries}
+                </div>
+              ) : (
+                ""
+              )}
+              {info.skills?.detail?.tools ? (
+                <div className="skill-text">
+                  <span>
+                    <GoDotFill className="dot" />
+                    Tools :
+                  </span>
+                  {info.skills?.detail?.tools}
+                </div>
+              ) : (
+                ""
+              )}
+              {info.skills?.detail?.softskills ? (
+                <div className="skill-text">
+                  <span>
+                    <GoDotFill className="dot" />
+                    Soft Skills :
+                  </span>
+                  {info.skills?.detail?.softskills}
+                </div>
+              ) : (
+                ""
+              )}
+              {info.skills?.detail?.otherskills ? (
+                <div className="skill-text">
+                  <span>
+                    <GoDotFill className="dot" />
+                    Other Skills :
+                  </span>
+                  {info.skills?.detail?.otherskills}
+                </div>
+              ) : (
+                ""
+              )}
+              {info.skills?.detail?.languages ? (
+                <div className="skill-text">
+                  <span>
+                    <GoDotFill className="dot" />
+                    Languages :
+                  </span>
+                  {info.skills?.detail?.languages}
+                </div>
+              ) : (
+                ""
+              )}
+            </div>
           </div>
-          <a href="" className="link">
-            <AiOutlineLink className="icon" />
-            http://hillffairnith.com
-          </a>
-          <div className="location">
-            <CiLocationOn className="icon" />
-            Mumbai,India
-          </div>
-          <ul className="points">
-            <li className="point">
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-              Dignissimos, repudiandae.
-            </li>
-            <li className="point">This is point 1</li>
-            <li className="point">This is point 1</li>
+        </div>
+      </div>
+    ),
+    [sections.project]: (
+      <div
+        key={"project"}
+        className={`section projects ${
+          info.project?.sectionTitle ? "" : "hidden"
+        }`}
+      >
+        <div className="sectionTitle">{info.project.sectionTitle}</div>
+        <div className="content">
+          {info.project?.details?.map((item) => (
+            <div className="item" key={item.title}>
+              <div className="item-container">
+                <div className="main">
+                  {item.title ? (
+                    <div className="title">•&nbsp;{item.title}</div>
+                  ) : (
+                    ""
+                  )}
+                  {item.overview && (
+                    <div className="overview">{item.overview}</div>
+                  )}
+                </div>
+                <div className="main-2">
+                  {item.link ? (
+                    <a
+                      href={item.link}
+                      className="link"
+                      target="_blank"
+                      style={{ color: `${props.activeColor}` }}
+                    >
+                      {/* <AiOutlineLink className="icon" /> */}
+                      Project Deployed Link
+                    </a>
+                  ) : (
+                    ""
+                  )}
+
+                  {item.github ? (
+                    <a
+                      href={item.github}
+                      className="link"
+                      target="_blank"
+                      style={{ color: `${props.activeColor}` }}
+                    >
+                      {/* <AiFillGithub className="icon" /> */}
+                      Project Github Link
+                    </a>
+                  ) : (
+                    ""
+                  )}
+                </div>
+              </div>
+              {item.points?.length > 0 ? (
+                <ul className="points">
+                  {item.points?.map((elem, index) => (
+                    <li className="point" key={elem + index}>
+                      {elem}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <span />
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    ),
+    [sections.education]: (
+      <div
+        key={"education"}
+        className={`section  ${info.education?.sectionTitle ? "" : "hidden"}`}
+      >
+        <div className="sectionTitle">{info.education.sectionTitle}</div>
+        <div className="content">
+          {info.education?.details?.map((item) => (
+            <div className="item" key={item.title}>
+              <div className="item-container">
+                <div className="main">
+                  <div className="title">•&nbsp;{item.title}</div>
+                  <div className="subtitle">{item.college}</div>
+                </div>
+                <div className="main-2">
+                  {item.startDate && item.endDate ? (
+                    <div className="date">
+                      {getFormattedDate(item.startDate)}-
+                      {getFormattedDate(item.endDate)}
+                    </div>
+                  ) : (
+                    ""
+                  )}
+                  {item?.cgpi ? <div>CGPI/Percentage : {item.cgpi}</div> : ""}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    ),
+    [sections.achievements]: (
+      <div
+        key={"achievements"}
+        className={`section projects ${
+          info.achievements?.sectionTitle ? "" : "hidden"
+        }`}
+      >
+        <div className="sectionTitle">{info.achievements.sectionTitle}</div>
+        {info.achievements?.points?.length > 0 ? (
+          <ul className="numbered">
+            {info.achievements?.points?.map((elem, index) => (
+              <li className="point" key={elem + index}>
+                {elem}
+              </li>
+            ))}
           </ul>
-        </div>
+        ) : (
+          <span />
+        )}
       </div>
-    </div>
-  );
-  const projectSection = (
-    <div key={"project"} className="section projects">
-      <div className="sectionTitle">Projects</div>
-      <div className="content">
-        <div className="item">
-          <div className="title">Project 1</div>
-          <a href="" className="link">
-            <AiOutlineLink className="icon" />
-            http://hillffairnith.com
-          </a>
-          <a href="" className="link">
-            <AiFillGithub className="icon" />
-            http://github.com/Kavya-25/hillffair
-          </a>
-          <div className="overview">
-            This project is a dummy and does nothing
-          </div>
-          <ul className="points">
-            <li className="point">This is point 1</li>
-            <li className="point">This is point 1</li>
-            <li className="point">This is point 1</li>
-          </ul>
-        </div>
+    ),
+    [sections.summary]: (
+      <div
+        key={"summary"}
+        className={`section projects ${
+          info.summary?.sectionTitle ? "" : "hidden"
+        }`}
+      >
+        <div className="sectionTitle">{info.summary.sectionTitle}</div>
+        <div className="overview">{info.summary?.detail}</div>
       </div>
-    </div>
-  );
-  const educationSection = (
-    <div key={"education"} className="section education">
-      <div className="sectionTitle">Education</div>
-      <div className="content">
-        <div className="item">
-          <div className="title">B.tech</div>
-          <div className="subtitle">NIT Hamirpur</div>
-          <div className="date">
-            <AiOutlineCalendar className="icon" />
-            1/2/2020 to 2/8/2023
-          </div>
-        </div>
+    ),
+    [sections.others]: (
+      <div
+        key={"other"}
+        className={`section projects ${
+          info.others?.sectionTitle ? "" : "hidden"
+        }`}
+      >
+        <div className="sectionTitle">{info.others.sectionTitle}</div>
+        <div className="overview">{info.others?.detail}</div>
       </div>
-    </div>
-  );
-  const achievementSection = (
-    <div key={"achievements"} className="section achievements">
-      <div className="sectionTitle">Achievements</div>
-      <ul className="numbered">
-        <li>this is some point</li>
-        <li>this is some point</li>
-        <li>this is some point</li>
-      </ul>
-    </div>
-  );
-  const summarySection = (
-    <div key={"summary"} className="section summary">
-      <div className="sectionTitle">Summary</div>
-      <div className="overview">This is some summary</div>
-    </div>
-  );
-  const otherSection = (
-    <div key={"other"} className="section others">
-      <div className="sectionTitle">Others</div>
-      <div className="overview">This is others</div>
-    </div>
-  );
+    ),
+  };
 
   useEffect(() => {
     setColumn([
-      [projectSection, educationSection, summarySection],
-      [workExpSection, achievementSection, otherSection],
+      [sections.skills, sections.workExp, sections.education, sections.project],
+      [sections.achievements, sections.summary, sections.others],
     ]);
   }, []);
 
-  return (
-    <div className="resume">
-      <div className="resume-header">
-        <h3 className="heading">Name</h3>
-        <h6 className="sub-heading">Frontend developer</h6>
+  useEffect(() => {
+    const resumecontainer = containerRef.current;
 
+    if (!props.activeColor || !resumecontainer) {
+      return;
+    }
+    resumecontainer.style.setProperty("color", props.activeColor);
+    console.log(props.activeColor);
+  }, [props.activeColor]);
+
+  return (
+    <div className="resume" ref={ref}>
+      <div className="resume-header">
+        <div className="resume-container">
+          <h3 className="heading">{info.basicInfo?.detail?.name}</h3>
+          <span
+            className="sub-heading"
+            style={{ color: `${props.activeColor}` }}
+          >
+            {info.basicInfo?.detail?.title}
+          </span>
+          {info.basicInfo?.detail?.phone ? (
+            <a href="" className="mobile">
+              <span>Mobile : </span>
+              {info.basicInfo?.detail?.phone}
+            </a>
+          ) : (
+            ""
+          )}
+          {info.basicInfo?.detail?.email ? (
+            <a href="" className="mobile">
+              {/* <MdAlternateEmail className="icon" /> */}
+              <span>Email : </span>
+              {info.basicInfo?.detail?.email}
+            </a>
+          ) : (
+            ""
+          )}
+        </div>
         <div className="links">
-          <a href="" className="link">
-            <MdAlternateEmail className="icon" />
-            Email@gmail.com
-          </a>
-          <a href="" className="link">
-            <AiOutlinePhone className="icon" />
-            1234567890
-          </a>
-          <a href="" className="link">
-            <AiFillLinkedin className="icon" />
-            https://www.linkedin.com/in/kavya-58a584208/
-          </a>
-          <a href="" className="link">
-            <AiFillGithub className="icon" />
-            https://github.com/Kavya-25/
-          </a>
+          {info.basicInfo?.detail?.linkedin ? (
+            <a
+              href={info.basicInfo?.detail?.linkedin}
+              target="_blank"
+              className="link"
+              style={{ color: `${props.activeColor}` }}
+            >
+              LinkedIn
+            </a>
+          ) : (
+            ""
+          )}
+          {info.basicInfo?.detail?.github ? (
+            <a
+              href={info.basicInfo?.detail?.github}
+              target="_blank"
+              className="link"
+              style={{ color: `${props.activeColor}` }}
+            >
+              Github
+            </a>
+          ) : (
+            ""
+          )}
         </div>
       </div>
       <div className="resume-main">
-        <div className="col1">{column[0]}</div>
-        <div className="col2">{column[1]}</div>
+        <div className="col1">
+          {column[0]?.map((item) => sectionDivs[item])}
+        </div>
+        <div className="col2">
+          {column[1]?.map((item) => sectionDivs[item])}
+        </div>
       </div>
     </div>
   );
-};
+});
+
+Resume.displayName = Resume;
+
+export default Resume;
